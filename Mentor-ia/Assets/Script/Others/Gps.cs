@@ -6,7 +6,7 @@ using UnityEngine.Android;
 public class Gps : MonoBehaviour
 {
     public Text gpsOut_cust;
-    public Text gpsOut_loja;
+
     public bool isUpdating;
     public float x;
     public float y;
@@ -59,7 +59,7 @@ public class Gps : MonoBehaviour
         if (maxWait < 1)
         {
             gpsOut_cust.text = "Timed out";
-            gpsOut_loja.text = "Timed out";
+
             print("Timed out");
             yield break;
         }
@@ -68,7 +68,6 @@ public class Gps : MonoBehaviour
         if (Input.location.status == LocationServiceStatus.Failed)
         {
             gpsOut_cust.text = "Unable to determine device location";
-            gpsOut_loja.text = "Unable to determine device location";
             print("Unable to determine device location");
             yield break;
         }
@@ -81,7 +80,6 @@ public class Gps : MonoBehaviour
                     y = -42.95432F;
             #endif
             gpsOut_cust.text = "" + x + " , " + y;
-            gpsOut_loja.text = "" + x + " , " + y;
             //gpsOut_cust.text = "Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + 100f + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp;
             //gpsOut_loja.text = "Location: " + Input.location.lastData.latitude + " " + Input.location.lastData.longitude + " " + Input.location.lastData.altitude + 100f + " " + Input.location.lastData.horizontalAccuracy + " " + Input.location.lastData.timestamp;
 

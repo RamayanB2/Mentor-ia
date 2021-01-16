@@ -15,7 +15,7 @@ public class View : MonoBehaviour
     public InputField field_nome, field_cpf, field_email,field_telefone, field_idade;
     public Dropdown field_cidade, field_estado, field_genero, field_raca, field_formacao;
     public Dropdown field_interesse1, field_interesse2, field_empr_foco1, field_empr_foco2;
-    public InputField field_diferencial, field_motivação;
+    public InputField field_diferencial, field_motivacao;
 
 
     [Header("Telas")]
@@ -23,21 +23,36 @@ public class View : MonoBehaviour
     public RectTransform tela_cad_cand1, tela_cad_cand2, tela_empresa_main, tela_ver_vagas, tela_login_empresa;
     
     public static View instance;
-    public bool isFirstUse = true;
 
     private void Awake(){
         if(instance==null)instance = this;
     }
 
-    public void ButtonProcurarMentoria() {
-        if (isFirstUse) {
-            isFirstUse = false;
-            tela_cad_cand1.gameObject.SetActive(true);
-        }        
-    }
+   
 
     public void ButtonAbrirMentorias() {
         tela_login_empresa.gameObject.SetActive(true);        
+    }
+
+    public Candidato GetCandidatoFromFields() {
+        Candidato c = new Candidato();
+        c.name = field_nome.text;
+        c.cpf = field_cpf.text;
+        c.email = field_email.text;
+        c.telNumber = field_telefone.text;
+        c.age = Int32.Parse(field_idade.text);
+        c.city = field_cidade.value;
+        c.state = field_estado.value;
+        c.gender = field_genero.value;
+        c.raceSkin = field_raca.value;
+        c.formacao = field_formacao.value;
+        c.areaDeInteresse1 = field_interesse1.value;
+        c.areaDeInteresse2 = field_interesse2.value;
+        c.empresaFocoId = field_empr_foco1.value;
+        c.empresaFocoId2 = field_empr_foco2.value;
+        c.diferencial = field_diferencial.text;
+        c.motivacao = field_motivacao.text;
+        return c;
     }
 
 

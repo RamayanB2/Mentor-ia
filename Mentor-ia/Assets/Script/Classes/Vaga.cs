@@ -5,7 +5,7 @@ using System;
 
 
 [Serializable]
-public class Vaga : MonoBehaviour
+public class Vaga
 {
     public int empresaId;
     public int vagaId;
