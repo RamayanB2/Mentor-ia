@@ -21,13 +21,11 @@ public class Candidato {
     public int areaDeInteresse1;
     public int areaDeInteresse2;
 
-    public float rankInteresse;
-    public float rankConhecGerais;
-    public float rankComunicacao;
-    public float rankPensLogico;
-
-    public int empresaFocoId;
-    public int empresaFocoId2;
+    public int ratingMax;
+    public int rankInteresse;
+    public int rankConhecGerais;
+    public int rankComunicacao;
+    public int rankPensLogico;
 
     public string diferencial;
     public string motivacao;
