@@ -1,7 +1,7 @@
 # Mentor-ia - Time 162
 Repositório da Equipe Tomorrow Thoughts - HackatonCCR2021
 
- <h2>Mentor-ia </h2>
+ <h2>Mentor-ia</h2>
 	
  <h3>Aplicativo mobile android que conecta empresa e jovens </h3>
 
@@ -41,7 +41,7 @@ Repositório da Equipe Tomorrow Thoughts - HackatonCCR2021
 	<li>Baixe o "Unity Hub"</li>
 	<li>Via Unity Hub baixe o "Unity" v2020.1.3.f1</li>
 	<li>Baixe o android support via UnityHub</li>
-	<li>Abra a pasta do projeto "Mentoria" via ferramenta Unity, File>Open Project</li>	
+	<li>Abra a pasta do projeto "Mentor-ia" via ferramenta Unity, File>Open Project</li>	
 	<li> File> Open Scene> Scenes/ Main </li>
 	<li> File > Build Settings > Switch platform> Android</li>
 	<li> Rodar na seta de play no centro da tela</li>
@@ -88,11 +88,11 @@ Repositório da Equipe Tomorrow Thoughts - HackatonCCR2021
 
 <h4>Especificação de diretórios</h4>
 	<ul>
-	<li>Pasta do projeto -> /Mentoria</li>
+	<li>Pasta do projeto -> /Mentor-ia</li>
 	<li>Executáveis do projeto -> /Apks</li>
-	<li>Scripts de código -> /Mentoria/Assets/Scripts</li>
-	<li>Imagens -> /Mentoria/Assets/Sprites</li>
-	<li>Plugins -> /Mentoria/Assets/Plugins</li>
+	<li>Scripts de código -> /Mentor-ia/Assets/Scripts</li>
+	<li>Imagens -> /Mentor-ia/Assets/Sprites</li>
+	<li>Plugins -> /Mentor-ia/Assets/Plugins</li>
 	</ul>
 <hr></hr>
 
