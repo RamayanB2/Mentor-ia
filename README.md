@@ -20,7 +20,7 @@ Repositório da Equipe Tomorrow Thoughts - HackatonCCR2021
 <ul>	
 	<li>Conecte seu celular Android no computador por cabo USB</li>
 	<li>Habilite transferência de arquivos</li>
-	<li>Acesse a pasta "Apks" no diretorio de entrega de codigo e selecione o arquivo "Mentoria.APK" </li>
+	<li>Acesse a pasta "Executavel Apks" no diretorio de entrega de codigo e selecione o arquivo "Mentoria.APK" </li>
 	<li>Faça download do .APK</li>
 	<li>Localize o "Mentoria.APK" baixado e transfira o arquivo para o celular</li>
 	<li>Localize o "Mentoria.APK" no seu celular Android no diretório usado na transferência</li>
