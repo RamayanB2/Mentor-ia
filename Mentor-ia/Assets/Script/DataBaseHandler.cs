@@ -8,46 +8,40 @@ public static class DataBaseHandler
 {
     [Header("DataBase indexes")]
     public static string TRACKERS_INDEXES = "INDEXES";
-    public static string TABLE_ITENS = "TABLE_ITENS";
-    public static string INDEX_PEDIDOS = "PEDIDOS";
-    public static string INDEX_PEDIDOS_RESOLVIDOS = "PEDIDOS_RESOLVIDOS";
-    public static string INDEX_LOJAS = "LOJAS";
-    public static string PEDIDO_ID_TRACKER = "PEDIDO_ID_TRACKER";
-    public static string CUSTOMER_ID_TRACKER = "CUSTOMER_ID_TRACKER";
-    public static string STORE_ID_TRACKER = "STORE_ID_TRACKER";
-    public static string DATABASE_URL = "https://quitanda-a5c94.firebaseio.com/";
+    public static string VAGA_ID_TRACKER = "VAGA_ID_TRACKER";
+    public static string CANDIDATO_ID_TRACKER = "CANDIDATO_ID_TRACKER";
+
+    public static string INDEX_CANDIDATOS = "CANDIDATOS";
+    public static string INDEX_VAGAS = "VAGAS";
+    public static string DATABASE_URL = "https://mentor-c2cac-default-rtdb.firebaseio.com/";
 
     static Indexes indexes_server;
     public static Controller controller;
-    static int id_ultimo_pedido = 0;
-    static int id_ultima_loja = 0;
+    static int id_ultima_vaga = 0;
+    static int id_ultimo_cand = 0;
 
 
     public static void SetController(Controller c){
         controller = c;
     }
 
-    /*
-    /// <summary>
-    /// Coloca o pedido feito pelo cliente no server (NOVO) (nao aceito pela loja)
-    /// </summary>
-    /// <param name="pedido"></param>
-    public static void PutPedidoInServer()
+    
+    public static void PutVagaInServer()
     {
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
             indexes_server = response;
 
-            Debug.Log("indexes_server.PEDIDO_ID_TRACKER:" + indexes_server.PEDIDO_ID_TRACKER);
-            id_ultimo_pedido = indexes_server.PEDIDO_ID_TRACKER;
-            id_ultimo_pedido++;
+            Debug.Log("indexes_server.PEDIDO_ID_TRACKER:" + indexes_server.VAGA_ID_TRACKER);
+            id_ultima_vaga = indexes_server.VAGA_ID_TRACKER;
+            id_ultima_vaga++;
             //pedido.id = id_ultimo_pedido;
-            indexes_server.PEDIDO_ID_TRACKER = id_ultimo_pedido;
+            indexes_server.VAGA_ID_TRACKER = id_ultima_vaga;
 
             RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
             //RestClient.Put<Pedido>($"{DATABASE_URL}{INDEX_PEDIDOS}/{pedido.id}.json", pedido);
         });
     }
-    */
+    
     /// <summary>
     /// Coloca pedido de volta no server/edita ele lá (Após a loja clicar em aceito)
     /// </summary>

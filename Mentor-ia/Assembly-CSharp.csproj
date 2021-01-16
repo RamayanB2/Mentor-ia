@@ -57,6 +57,7 @@
     <Compile Include="Assets\Script\DataBaseHandler.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\RequestException.cs" />
     <Compile Include="Assets\Script\Classes\Empresa.cs" />
+    <Compile Include="Assets\Script\Classes\CellClass\CandCell.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\StaticCoroutine.cs" />
     <Compile Include="Assets\Script\FormaterToUpload\CandsFormater.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\RequestHelper.cs" />
@@ -75,6 +76,7 @@
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\ResponseHelper.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\Extensions.cs" />
     <Compile Include="Assets\RestClient\Packages\RSG.Promise\EnumerableExt.cs" />
+    <Compile Include="Assets\Script\BasicData.cs" />
     <Compile Include="Assets\RestClient\Packages\RSG.Promise\PromiseTimer.cs" />
     <Compile Include="Assets\Script\Classes\Vaga.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\JsonHelper.cs" />
@@ -82,8 +84,6 @@
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\RequestHelperExtension.cs" />
     <Compile Include="Assets\RestClient\Packages\RSG.Promise\Exceptions\PromiseException.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\Common.cs" />
-    <Compile Include="Assets\Script\Classes\CellClass\CandCell.cs" />
-    <Compile Include="Assets\Script\PhotoCands.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

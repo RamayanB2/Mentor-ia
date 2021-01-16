@@ -21,9 +21,6 @@ public class Controller : MonoBehaviour {
     public VagaCell prefabVagaEmpViewCell;
     public CandCell prefabCandCell;
 
-    [Header("Ccandidatos")]
-    public String[] areas_de_interesse = { "Qualquer","Atendimento ao cliente","Atividade física","Programação","Design e Criação","Marketing","Contas e Cálculos","Elétrica","Mecânica","Engenharia","Medicina","Gerência de Equipe","Gestão de projetos" };
-
     [Header("gps")]
     Gps gps;
     Sprite emp_logo;
@@ -58,12 +55,13 @@ public class Controller : MonoBehaviour {
 
         if (PlayerPrefs.GetInt("IsCandidato") == 1)
         {
+            isCandidato = true;
             LoadCandidatoProfile();
 
         }
         else if (PlayerPrefs.GetInt("IsEmpresa") == 1)
         {
-            
+            isEmpresa = true;
         }
     }
 
@@ -73,6 +71,10 @@ public class Controller : MonoBehaviour {
         }
     }
 
+    public void BackFromCandidatoProfile(){
+        view.BackFromCandidatoProfile(isCandidato);
+    }
+
     public void LoginEmpresaCheck() {
         Empresa[] emps = empresaHolder.GetComponentsInChildren<Empresa>();
         string pass = view.field_empresa_pass.text;
@@ -80,7 +82,7 @@ public class Controller : MonoBehaviour {
 
         foreach (Empresa emp in emps){
             if ((emp.id.ToString()) == id_emp) {
-                Debug.Log("EMPRESA ESTÁ NO SISTEMA");
+
                 if ((emp.password.ToString()) == pass) {
                     Debug.Log("PASS CORRETO!");
                     view.GoToMainPageEmpresa();
@@ -89,9 +91,13 @@ public class Controller : MonoBehaviour {
                     view.empresa_logo_mentcria.sprite = this.emp_logo;
                     PlayerPrefs.SetInt("IsEmpresa", 1);
                     this.perfil_empresa = emp;
+                    isEmpresa = true;
+                    isCandidato = false;
+                    View.ShowFeedbackMsg("Login sucedido!");
                 }
             }
         }
+        if(!isEmpresa) View.ShowFeedbackMsg("Login não existente!");
     }
 
     private void SetEmpresaListInDropDown()
@@ -108,7 +114,9 @@ public class Controller : MonoBehaviour {
 
     private void SetAreasListInDropDown()
     {
-        List<String> ss2 = new List<string>(areas_de_interesse);
+        BasicData bd = FindObjectOfType<BasicData>();
+        List<String> ss2 = new List<string>(bd.areaDeInteresse);
+
         view.field_interesse1.ClearOptions();
         view.field_interesse1.AddOptions(ss2);
         view.field_interesse1.captionText.text = "Interesse foco 1";
@@ -136,7 +144,7 @@ public class Controller : MonoBehaviour {
     }
 
     public Sprite GetPhotoCandPadrao(string cpf){
-        Sprite s = FindObjectOfType<PhotoCands>().GetPhotoCand(cpf);
+        Sprite s = FindObjectOfType<BasicData>().GetPhotoCand(cpf);
         return s;
     }
     
@@ -147,6 +155,7 @@ public class Controller : MonoBehaviour {
         PlayerPrefs.SetInt("IsCandidato",1);
         SaveCandidatoProfile();
         View.ShowFeedbackMsg("Seu perfil foi criado!");
+        isCandidato = true;
     }
 
     public void CreateVagaMentoria() {
@@ -162,6 +171,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void ShowLoadedVagasMentoriaToUser() {
+        view.CleanHolder(vagaCellsHolder_USER,false,true);
         VagaCell[] vcs = vagaCellsHolder_LOADER.GetComponentsInChildren<VagaCell>();
         VagaCell vctemp;
         foreach (VagaCell vc in vcs) {
@@ -174,6 +184,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void ShowLoadedCandsFromVaga() {
+        view.CleanHolder(candsCellsHolder_EMP, true,false);
         CandCell[] ccs = candsCellsHolder.GetComponentsInChildren<CandCell>();
         CandCell cctemp;
         foreach (CandCell cc in ccs){
@@ -198,6 +209,10 @@ public class Controller : MonoBehaviour {
 
     public void ShowCandidatoInfoToEmpresa(Candidato cand) {
         view.ShowCandInfo(cand, GetPhotoCandPadrao(cand.cpf));
+    }
+
+    public void ShowCandidatoProfileToCand() {
+        view.ShowCandInfo(perfil_usuario, GetPhotoCandPadrao(perfil_usuario.cpf));
     }
 
 

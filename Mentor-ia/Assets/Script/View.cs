@@ -13,7 +13,7 @@ public class View : MonoBehaviour
 
     [Header("Fields Cadastro Candidato")]
     public InputField field_nome;
-    public InputField field_cpf, field_email,field_telefone, field_idade;
+    public InputField field_cpf, field_email, field_telefone, field_idade;
     public Dropdown field_cidade, field_estado, field_genero, field_raca, field_formacao;
     public Dropdown field_interesse1, field_interesse2, field_empr_foco1, field_empr_foco2;
     public InputField field_diferencial, field_motivacao;
@@ -42,6 +42,7 @@ public class View : MonoBehaviour
     public Image photoCandShow;
     public Text descCandShow;
     public Text diferencialCandShow;
+    public Text interessesCandShow;
     public Slider interesse_slider, conhec_slider, comunic_slider, pensLog_slider;
 
     [Header("Telas")]
@@ -53,8 +54,8 @@ public class View : MonoBehaviour
 
     public static View instance;
 
-    private void Awake(){
-        if(instance==null)instance = this;
+    private void Awake() {
+        if (instance == null) instance = this;
     }
 
     private void Start()
@@ -68,17 +69,25 @@ public class View : MonoBehaviour
     }
 
     public void ButtonAbrirMentorias() {
-        tela_login_empresa.gameObject.SetActive(true);        
+        tela_login_empresa.gameObject.SetActive(true);
     }
 
-    public void GoToMainPageEmpresa(){
+    public void GoToMainPageEmpresa() {
         tela_login_empresa.gameObject.SetActive(false);
         tela_empresa_main.gameObject.SetActive(true);
     }
 
-    public void GoToMainPageCandidato(){
+    public void GoToMainPageCandidato() {
         tela_login_empresa.gameObject.SetActive(false);
         tela_ver_vagas.gameObject.SetActive(true);
+    }
+
+    public void BackFromCandidatoProfile(bool isCand) {
+        tela_cand_showemp.gameObject.SetActive(false);
+        if (isCand) {
+            tela_ver_vagas.gameObject.SetActive(true);
+        } else
+            tela_vaga_show_to_emp.gameObject.SetActive(true);
     }
 
     public Candidato GetCandidatoFromFields() {
@@ -87,7 +96,7 @@ public class View : MonoBehaviour
         c.cpf = field_cpf.text;
         c.email = field_email.text;
         c.telNumber = field_telefone.text;
-        c.age = Int32.Parse(field_idade.text);
+        if(field_idade.text!="")c.age = Int32.Parse(field_idade.text);
         c.city = field_cidade.value;
         c.state = field_estado.value;
         c.gender = field_genero.value;
@@ -120,7 +129,7 @@ public class View : MonoBehaviour
         iconVagaShow.sprite = sp;
     }
 
-    public void ShowVagaInfoToEmp(Vaga v, Sprite sp){
+    public void ShowVagaInfoToEmp(Vaga v, Sprite sp) {
         tela_vaga_show_to_emp.gameObject.SetActive(true);
         topbarVagaTitle.text = v.title;
         topbarVagaIcon.sprite = sp;
@@ -128,10 +137,12 @@ public class View : MonoBehaviour
 
     public void ShowCandInfo(Candidato c, Sprite sp)
     {
+        BasicData bd = FindObjectOfType<BasicData>();
         tela_cand_showemp.gameObject.SetActive(true);
         tnameCandShow.text = c.name;
-        descCandShow.text = c.age +" anos, "+ c.city + ", "+c.state+", "+c.formacao+", "+"\nContato: "+c.email+", tel:"+c.telNumber;
-        diferencialCandShow.text = "Diferencial: "+c.diferencial;
+        descCandShow.text = c.age + " anos, " + bd.GetCityName(c.city) + ", " + bd.GetStateName(c.state) + ", " + bd.GetFormacaoName(c.formacao) + "" + "\nContato: " + c.email + ", tel:" + c.telNumber;
+        diferencialCandShow.text = "Diferencial: " + c.diferencial;
+        interessesCandShow.text = "Áreas de interesse: " + bd.GetAreaInteresse(c.areaDeInteresse1) + ", " + bd.GetAreaInteresse(c.areaDeInteresse2);
         interesse_slider.value = c.rankInteresse;
         conhec_slider.value = c.rankConhecGerais;
         comunic_slider.value = c.rankComunicacao;
@@ -139,6 +150,36 @@ public class View : MonoBehaviour
 
         photoCandShow.sprite = sp;
     }
+
+    public void CleanHolder(Transform holder, bool isCandCell, bool isVagaCell)
+    {
+        if (isCandCell)
+        {
+            CandCell[] ccs = holder.GetComponentsInChildren<CandCell>();
+            if (ccs != null)
+            {
+                foreach (CandCell cc in ccs)
+                {
+                    GameObject.Destroy(cc.gameObject);
+                }
+            }
+        }
+        else if (isVagaCell)
+        {
+            VagaCell[] vcs = holder.GetComponentsInChildren<VagaCell>();
+            if (vcs != null)
+            {
+                foreach (VagaCell vc in vcs)
+                {
+                    GameObject.Destroy(vc.gameObject);
+                }
+            }
+
+        }
+    }
+
+    
+
 
 
 

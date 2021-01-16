@@ -16,7 +16,7 @@ public class VagaCell : MonoBehaviour
 
     public void LoadVagaOnCell(Vaga vaga) {
         this.vaga = vaga;
-        this.title_vaga.text = vaga.title;
+        this.title_vaga.text = UppercaseFirstLetter(vaga.title);
     }
 
     public void LoadVagaLogo(Sprite sp) {
@@ -31,6 +31,18 @@ public class VagaCell : MonoBehaviour
         FindObjectOfType<Controller>().ShowVagaInfoToEmpresa(this.vaga);
     }
 
+
+
+    private string UppercaseFirstLetter(string s)
+    {
+        // Check for empty string.
+        if (string.IsNullOrEmpty(s))
+        {
+            return string.Empty;
+        }
+        // Return char and concat substring.
+        return char.ToUpper(s[0]) + s.Substring(1);
+    }
 
 
 

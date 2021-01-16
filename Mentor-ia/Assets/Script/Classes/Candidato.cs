@@ -33,6 +33,24 @@ public class Candidato {
     void Start()
     {
         
+
+    }
+
+    public Candidato() {
+        this.cpf = "00011122233";
+        this.name = "Nome Exemplo";
+        this.email = "emailexemplo@hotmail.com";
+        this.telNumber = "21999887766";
+        this.age = 18;
+        this.raceSkin = 1;
+        this.state = 1;
+        this.city = 1;
+        this.gender = 1;
+        this.formacao = 1;
+        this.areaDeInteresse1 = 1;
+        this.areaDeInteresse2 = 1;
+        this.diferencial = "Luto kung fu nas horas vagas.";
+        this.motivacao = "Ser um faixa preta.";
     }
 
     

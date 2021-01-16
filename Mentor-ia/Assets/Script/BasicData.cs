@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PhotoCands : MonoBehaviour
+public class BasicData : MonoBehaviour
 {
     public Sprite[] photoCands;
+
+    public string[] cidades;
+
+    public string[] estados;
+
+    public string[] formacoes;
+
+    public string[] areaDeInteresse;
+
+    private void Start()
+    {
+
+    }
 
     public Sprite GetPhotoCand(string cpf) {
         switch (cpf) {
@@ -36,5 +49,21 @@ public class PhotoCands : MonoBehaviour
         }
 
     }
-    
+
+    public string GetCityName(int id){
+        return cidades[id];
+    }
+
+    public string GetStateName(int id){
+        return estados[id];
+    }
+
+    public string GetFormacaoName(int id){
+        return formacoes[id];
+    }
+
+    public string GetAreaInteresse(int id){
+        return areaDeInteresse[id];
+    }
+
 }
