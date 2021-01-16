@@ -37,7 +37,6 @@ public class Controller : MonoBehaviour {
     public Empresa perfil_empresa;
     public Vaga vaga_mentoria;
 
-    public bool isCandidatoRegistered = false;
     private View view;
 
     [Header("Debug")]
@@ -45,8 +44,9 @@ public class Controller : MonoBehaviour {
 
 
     void Start(){
-        if (deletePrefs) PlayerPrefs.DeleteAll();
-
+#if UNITY_EDITOR
+        if (deletePrefs) PlayerPrefs.DeleteAll();//NÃO ESQUECER ISSO AQUI SE NÃO NÃO VAI SALVAR
+#endif
         view = FindObjectOfType<View>();
         DataBaseHandler.SetController(this);
 
@@ -57,17 +57,25 @@ public class Controller : MonoBehaviour {
         {
             isCandidato = true;
             LoadCandidatoProfile();
+            ButtonProcurarMentoria();
 
         }
         else if (PlayerPrefs.GetInt("IsEmpresa") == 1)
         {
             isEmpresa = true;
+            view.tela_cand_ou_empresa.gameObject.SetActive(false);
+            view.tela_empresa_main.gameObject.SetActive(true);
         }
     }
 
     public void ButtonProcurarMentoria(){
-        if (!isCandidatoRegistered){
+        if (!isCandidato){
+            view.tela_cand_ou_empresa.gameObject.SetActive(false);
             view.tela_cad_cand1.gameObject.SetActive(true);
+        }
+        else {
+            view.tela_cand_ou_empresa.gameObject.SetActive(false);
+            view.tela_ver_vagas.gameObject.SetActive(true);
         }
     }
 
@@ -93,7 +101,7 @@ public class Controller : MonoBehaviour {
                     this.perfil_empresa = emp;
                     isEmpresa = true;
                     isCandidato = false;
-                    View.ShowFeedbackMsg("Login sucedido!");
+                    View.ShowFeedbackMsg("Login bem sucedido!");
                 }
             }
         }
@@ -143,23 +151,37 @@ public class Controller : MonoBehaviour {
         return null;
     }
 
+    public String GetNameEmpresa(int id_emp)
+    {
+        Empresa[] emps = empresaHolder.GetComponentsInChildren<Empresa>();
+        foreach (Empresa emp in emps)
+        {
+            if (emp.id == id_emp) return emp.name;
+        }
+        return null;
+    }
+
     public Sprite GetPhotoCandPadrao(string cpf){
         Sprite s = FindObjectOfType<BasicData>().GetPhotoCand(cpf);
         return s;
     }
     
 
+    /// <summary>
+    /// Cadastro de Candidato
+    /// </summary>
     public void CreateCandidato() {
         perfil_usuario = view.GetCandidatoFromFields();
-        isCandidatoRegistered = true;
-        PlayerPrefs.SetInt("IsCandidato",1);
         SaveCandidatoProfile();
         View.ShowFeedbackMsg("Seu perfil foi criado!");
+        if (!isCandidato) DataBaseHandler.PutNewCandidatoInServer(perfil_usuario);//<---
         isCandidato = true;
     }
 
     public void CreateVagaMentoria() {
         vaga_mentoria = view.GetVagaMentoriaFromFields();
+        vaga_mentoria.SetEmpresa(perfil_empresa);
+
         VagaCell vc = Instantiate(prefabVagaCell, vagaCellsHolder_LOADER.transform);
         VagaCell vc2 = Instantiate(prefabVagaEmpViewCell, vagaCellsHolder_EMPVIEW.transform);
         vc.LoadVagaOnCell(vaga_mentoria);
@@ -167,6 +189,7 @@ public class Controller : MonoBehaviour {
         vc2.LoadVagaOnCell(vaga_mentoria);
         vc2.LoadVagaLogo(emp_logo);
         vaga_mentoria.RandomCandToVaga();
+        DataBaseHandler.PutNewVagaInServer(vaga_mentoria);//<---
         View.ShowFeedbackMsg("Mentoria Criada!");
     }
 
@@ -198,7 +221,7 @@ public class Controller : MonoBehaviour {
 
     public void ShowVagaInfoToCandidato(Vaga v){
         this.vaga_mentoria = v;
-        view.ShowVagaInfo(v, GetLogoEmpresa(v.empresaId));
+        view.ShowVagaInfo(v, GetLogoEmpresa(v.empresaId), GetNameEmpresa(v.empresaId));
     }
 
     public void ShowVagaInfoToEmpresa(Vaga v){
@@ -218,7 +241,7 @@ public class Controller : MonoBehaviour {
 
     public void ConfirmCandidatarAVaga() {
         this.vaga_mentoria.CandidatarAvaga(this.perfil_usuario.cpf);
-        View.ShowFeedbackMsg("Candidatura confirmada!");
+        View.ShowFeedbackMsg("Candidatura realizada!");
     }
     
 
@@ -227,6 +250,7 @@ public class Controller : MonoBehaviour {
     #region save_load
 
     private void SaveCandidatoProfile() {
+        PlayerPrefs.SetInt("IsCandidato", 1);
         string s1 = perfil_usuario.cpf + "," + perfil_usuario.name + "," + perfil_usuario.email + "," + perfil_usuario.telNumber + "," + perfil_usuario.diferencial + "," + perfil_usuario.motivacao;
         PlayerPrefs.SetString("StringsCandidato",s1);
         string s2 = perfil_usuario.age + "," + perfil_usuario.raceSkin + "," + perfil_usuario.state + "," + perfil_usuario.city + "," + perfil_usuario.gender + "," + perfil_usuario.formacao

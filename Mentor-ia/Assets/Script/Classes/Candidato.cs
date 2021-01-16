@@ -6,6 +6,7 @@ using System;
 [Serializable]
 public class Candidato {
 
+    public int id;
     public string cpf;
     public string name;
     public string email;

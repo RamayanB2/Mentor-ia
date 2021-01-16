@@ -23,6 +23,9 @@ public static class DataBaseHandler
 
     public static void SetController(Controller c){
         controller = c;
+        //Comandos de primeiro uso abaixo
+        //indexes_server = new Indexes();
+        //RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
     }
 
     
@@ -38,7 +41,7 @@ public static class DataBaseHandler
             indexes_server.VAGA_ID_TRACKER = id_ultima_vaga;
 
             RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
-            //RestClient.Put<Pedido>($"{DATABASE_URL}{INDEX_PEDIDOS}/{pedido.id}.json", pedido);
+           // RestClient.Put<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{vaga.id}.json", pedido);
         });
     }
     
@@ -46,31 +49,27 @@ public static class DataBaseHandler
     /// Coloca pedido de volta no server/edita ele lá (Após a loja clicar em aceito)
     /// </summary>
     /// <param name="pedido"></param>
-    /*
-    public static void PutPedidoAceitoInServer(Pedido pedido){
-            pedido.resolvido = true;            
-            //RestClient.Put<Pedido>($"{DATABASE_URL}{INDEX_PEDIDOS}/{pedido.id}.json", pedido);
+    
+    public static void PutPedidoAceitoInServer(Vaga vaga){
+            RestClient.Put<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{vaga.vagaId}.json", vaga);
     }
-    */
-    /*
-    /// <summary>
-    /// Pega pedidos do server (não aceitos ainda e na distancia que a loja entrega)
-    /// </summary>
-    public static void GetPedidosFromServer()
+    
+    
+    public static void GetVagasFromServer()
     {
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
             indexes_server = response;
 
-            id_ultimo_pedido = indexes_server.PEDIDO_ID_TRACKER;
+            id_ultima_vaga = indexes_server.VAGA_ID_TRACKER;
             int i;
-            for (i=0;i<=id_ultimo_pedido;i++) {
+            for (i=0;i<= id_ultima_vaga; i++) {
                 
-                RestClient.Get<Pedido>($"{DATABASE_URL}{INDEX_PEDIDOS}/{i}.json").Then(response2 => {
+                RestClient.Get<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{i}.json").Then(response2 => {
                     //if (response2 != null) Debug.Log("============================> EXISTE PEDIDO");
                     //PedidosPendentes pp = response;
                     //controller.pedidos_pendentes = pp.pedidos;
-                    Pedido p = response2;
-                    if (p.resolvido == false) controller.LoadPedidoCell(p);
+                    Vaga v = response2;
+                    //if (p.resolvido == false) controller.LoadPedidoCell(p);
                     //controller.ReLoadPedidos();
                     return;
 
@@ -83,7 +82,7 @@ public static class DataBaseHandler
 
         
     }
-*/
+
     public static void UpdateQuitandaItemTable() {
         //RestClient.Put<QuitandaItemTable>($"{DATABASE_URL}{TABLE_ITENS}.json", qit);
     }
@@ -98,36 +97,45 @@ public static class DataBaseHandler
         });
         */
     }
-    /*
-    /// <summary>
-    /// Salva a loja nova no server
-    /// </summary>
-    /// <param name="l"></param>
-    public static void PutNewLojaInServer(Loja l){
+
+    public static void PutNewCandidatoInServer(Candidato cand){
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
             indexes_server = response;
 
-            int id_loja = indexes_server.STORE_ID_TRACKER;
-            id_loja++;
-            indexes_server.STORE_ID_TRACKER = id_loja;
-            l.id = id_loja;
-            l.SaveLojaIdOnDevice();
+            int id_cand= indexes_server.CANDIDATO_ID_TRACKER;
+            id_cand++;
+            indexes_server.CANDIDATO_ID_TRACKER = id_cand;
+            cand.id = id_cand;
+            //l.SaveLojaIdOnDevice();
 
             RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
-            RestClient.Put<Loja>($"{DATABASE_URL}{INDEX_LOJAS}/{id_loja}.json", l);
+            RestClient.Put<Candidato>($"{DATABASE_URL}{INDEX_CANDIDATOS}/{id_cand}.json", cand);
+        });       
+    }
+
+    public static void PutNewVagaInServer(Vaga vag)
+    {
+        RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
+            indexes_server = response;
+
+            int id_vag = indexes_server.VAGA_ID_TRACKER;
+            id_vag++;
+            indexes_server.VAGA_ID_TRACKER = id_vag;
+            vag.vagaId = id_vag;
+            //l.SaveLojaIdOnDevice();
+
+            RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
+            RestClient.Put<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{id_vag}.json", vag);
         });
-       
+
     }
-    */
-    /*
-    /// <summary>
-    /// Edita a loja e salva no server
-    /// </summary>
-    /// <param name="l"></param>
-    public static void EditLojaInServer(Loja l){
-        RestClient.Put<Loja>($"{DATABASE_URL}{INDEX_LOJAS}/{l.id}.json", l);  
+
+
+    public static void EditCandidatoInServer(Candidato cand){
+        RestClient.Put<Candidato>($"{DATABASE_URL}{INDEX_CANDIDATOS}/{cand.id}.json", cand);  
     }
-    */
+    
+
     /*
     public static void GetLojasFromServer() {
         Loja loja;

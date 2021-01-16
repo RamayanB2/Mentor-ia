@@ -15,10 +15,7 @@ public class BasicData : MonoBehaviour
 
     public string[] areaDeInteresse;
 
-    private void Start()
-    {
 
-    }
 
     public Sprite GetPhotoCand(string cpf) {
         switch (cpf) {
@@ -65,5 +62,6 @@ public class BasicData : MonoBehaviour
     public string GetAreaInteresse(int id){
         return areaDeInteresse[id];
     }
+
 
 }

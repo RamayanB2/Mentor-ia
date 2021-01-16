@@ -84,6 +84,7 @@
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\RequestHelperExtension.cs" />
     <Compile Include="Assets\RestClient\Packages\RSG.Promise\Exceptions\PromiseException.cs" />
     <Compile Include="Assets\RestClient\Packages\Proyecto26.RestClient\Helpers\Common.cs" />
+    <Compile Include="Assets\Script\Others\SMSContacter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

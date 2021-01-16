@@ -30,6 +30,7 @@ public class View : MonoBehaviour
 
     [Header("Fields Vaga Show To Cand")]
     public Text titleVagaShow;
+    public Text topdescVagaShow;
     public Text descVagaShow;
     public Image iconVagaShow;
 
@@ -94,8 +95,9 @@ public class View : MonoBehaviour
         Candidato c = new Candidato();
         c.name = field_nome.text;
         c.cpf = field_cpf.text;
-        c.email = field_email.text;
-        c.telNumber = field_telefone.text;
+        if (field_email.text != "") c.email = field_email.text;
+        if (field_email.text != "") c.email = field_email.text;
+        if (field_telefone.text != "")c.telNumber = field_telefone.text;
         if(field_idade.text!="")c.age = Int32.Parse(field_idade.text);
         c.city = field_cidade.value;
         c.state = field_estado.value;
@@ -122,10 +124,12 @@ public class View : MonoBehaviour
         return v;
     }
 
-    public void ShowVagaInfo(Vaga v, Sprite sp) {
+    public void ShowVagaInfo(Vaga v, Sprite sp, string name_emp) {
+        BasicData bd = FindObjectOfType<BasicData>();
         tela_vaga_show_to_cand.gameObject.SetActive(true);
         titleVagaShow.text = v.title;
-        descVagaShow.text = v.desc;
+        topdescVagaShow.text = name_emp.ToUpper() + ", <color=#ffffff>"+ bd.GetCityName(v.city)+", "+bd.GetStateName(v.state)+ "</color>";
+        descVagaShow.text = v.desc+ "\n\nFormação mínima: " + bd.GetFormacaoName(v.formacaoMinima);
         iconVagaShow.sprite = sp;
     }
 
@@ -140,7 +144,7 @@ public class View : MonoBehaviour
         BasicData bd = FindObjectOfType<BasicData>();
         tela_cand_showemp.gameObject.SetActive(true);
         tnameCandShow.text = c.name;
-        descCandShow.text = c.age + " anos, " + bd.GetCityName(c.city) + ", " + bd.GetStateName(c.state) + ", " + bd.GetFormacaoName(c.formacao) + "" + "\nContato: " + c.email + ", tel:" + c.telNumber;
+        descCandShow.text = c.age + " anos, " + bd.GetCityName(c.city) + ", " + bd.GetStateName(c.state) + "\n" + bd.GetFormacaoName(c.formacao) + "" + "\nContato: " + c.email + "\nTel: " + c.telNumber;
         diferencialCandShow.text = "Diferencial: " + c.diferencial;
         interessesCandShow.text = "Áreas de interesse: " + bd.GetAreaInteresse(c.areaDeInteresse1) + ", " + bd.GetAreaInteresse(c.areaDeInteresse2);
         interesse_slider.value = c.rankInteresse;
