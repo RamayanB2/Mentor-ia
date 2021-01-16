@@ -41,6 +41,8 @@ public class Controller : MonoBehaviour {
 
     [Header("Debug")]
     public bool deletePrefs;
+    private BasicData basic_data;
+    private SMSContacter contacter;
 
 
     void Start(){
@@ -49,6 +51,8 @@ public class Controller : MonoBehaviour {
 #endif
         view = FindObjectOfType<View>();
         DataBaseHandler.SetController(this);
+        basic_data = FindObjectOfType<BasicData>();
+        contacter = new SMSContacter();
 
         SetEmpresaListInDropDown();
         SetAreasListInDropDown();
@@ -64,7 +68,7 @@ public class Controller : MonoBehaviour {
         {
             isEmpresa = true;
             view.tela_cand_ou_empresa.gameObject.SetActive(false);
-            view.tela_empresa_main.gameObject.SetActive(true);
+            view.tela_login_empresa.gameObject.SetActive(true);
         }
     }
 
@@ -76,6 +80,7 @@ public class Controller : MonoBehaviour {
         else {
             view.tela_cand_ou_empresa.gameObject.SetActive(false);
             view.tela_ver_vagas.gameObject.SetActive(true);
+            ShowLoadedVagasMentoriaToUser();
         }
     }
 
@@ -176,6 +181,7 @@ public class Controller : MonoBehaviour {
         View.ShowFeedbackMsg("Seu perfil foi criado!");
         if (!isCandidato) DataBaseHandler.PutNewCandidatoInServer(perfil_usuario);//<---
         isCandidato = true;
+        ShowLoadedVagasMentoriaToUser();
     }
 
     public void CreateVagaMentoria() {
@@ -206,6 +212,21 @@ public class Controller : MonoBehaviour {
         }
     }
 
+    public void ShowMyVagasMentoriaToEmp()
+    {
+        view.CleanHolder(vagaCellsHolder_EMPVIEW, false, true);
+        VagaCell[] vcs = vagaCellsHolder_LOADER.GetComponentsInChildren<VagaCell>();
+        VagaCell vctemp;
+        foreach (VagaCell vc in vcs)
+        {
+            if (vc.vaga.empresaId == perfil_empresa.id){
+                vctemp = Instantiate(prefabVagaEmpViewCell, vagaCellsHolder_EMPVIEW.transform);
+                vctemp.LoadVagaOnCell(vc.vaga);
+                vctemp.LoadVagaLogo(GetLogoEmpresa(vc.vaga.empresaId));
+             }
+        }
+    }
+
     public void ShowLoadedCandsFromVaga() {
         view.CleanHolder(candsCellsHolder_EMP, true,false);
         CandCell[] ccs = candsCellsHolder.GetComponentsInChildren<CandCell>();
@@ -231,6 +252,7 @@ public class Controller : MonoBehaviour {
     }
 
     public void ShowCandidatoInfoToEmpresa(Candidato cand) {
+        this.perfil_usuario = cand;
         view.ShowCandInfo(cand, GetPhotoCandPadrao(cand.cpf));
     }
 
@@ -238,12 +260,49 @@ public class Controller : MonoBehaviour {
         view.ShowCandInfo(perfil_usuario, GetPhotoCandPadrao(perfil_usuario.cpf));
     }
 
+    public void AskCandidatoConfirmCall(){
+        view.AskConfirmSelectCandidato(vaga_mentoria.title);
+    }
+
+    public void InviteCandidatoEmailSMS() {
+        contacter.SetTargetCand(perfil_usuario);
+        contacter.SendEmail();
+        contacter.SendText();
+    }
+
 
     public void ConfirmCandidatarAVaga() {
         this.vaga_mentoria.CandidatarAvaga(this.perfil_usuario.cpf);
         View.ShowFeedbackMsg("Candidatura realizada!");
     }
-    
+
+
+
+    #region load_from_database
+
+    public void LoadVagaCell(Vaga v)
+    {
+        //Aqui poderia filtrar a vaga por ser da mesma cidade do jovem por exemplo
+        if (v.isVagaOpen)
+        {
+            VagaCell vc = Instantiate(prefabVagaCell, vagaCellsHolder_LOADER.transform);
+            vc.LoadVagaOnCell(v);
+            vc.LoadVagaLogo(GetLogoEmpresa(v.empresaId));
+        }
+    }
+
+    public void LoadCandidatoCell(Candidato cand)
+    {
+        //Aqui poderia filtrar o candidato por ser da mesma cidade por exemplo
+
+        CandCell cc = Instantiate(prefabCandCell, candsCellsHolder.transform);
+        cc.LoadCandidatoOnCell(cand);
+        cc.LoadCandLogo(basic_data.photoCands[0]);
+        
+    }
+
+    #endregion
+
 
 
 

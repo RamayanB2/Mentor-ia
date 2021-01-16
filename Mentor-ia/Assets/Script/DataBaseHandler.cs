@@ -23,6 +23,8 @@ public static class DataBaseHandler
 
     public static void SetController(Controller c){
         controller = c;
+        GetVagasFromServer();
+        GetCandidatosFromServer();
         //Comandos de primeiro uso abaixo
         //indexes_server = new Indexes();
         //RestClient.Put<Indexes>($"{DATABASE_URL}{TRACKERS_INDEXES}.json", indexes_server);
@@ -65,12 +67,12 @@ public static class DataBaseHandler
             for (i=0;i<= id_ultima_vaga; i++) {
                 
                 RestClient.Get<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{i}.json").Then(response2 => {
-                    //if (response2 != null) Debug.Log("============================> EXISTE PEDIDO");
-                    //PedidosPendentes pp = response;
-                    //controller.pedidos_pendentes = pp.pedidos;
+
                     Vaga v = response2;
-                    //if (p.resolvido == false) controller.LoadPedidoCell(p);
+                    if (v.isVagaOpen == true) controller.LoadVagaCell(v);
+
                     //controller.ReLoadPedidos();
+
                     return;
 
                 });
@@ -83,20 +85,7 @@ public static class DataBaseHandler
         
     }
 
-    public static void UpdateQuitandaItemTable() {
-        //RestClient.Put<QuitandaItemTable>($"{DATABASE_URL}{TABLE_ITENS}.json", qit);
-    }
 
-    public static void GetQuitandaItemTable()
-    {
-        /*
-        RestClient.Get<QuitandaItemTable>($"{DATABASE_URL}{TABLE_ITENS}.json").Then(response =>
-        {
-            controller.qit=response;
-            controller.PresetTheProductListQIT();
-        });
-        */
-    }
 
     public static void PutNewCandidatoInServer(Candidato cand){
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
@@ -136,40 +125,28 @@ public static class DataBaseHandler
     }
     
 
-    /*
-    public static void GetLojasFromServer() {
-        Loja loja;
+    
+    public static void GetCandidatosFromServer() {
+        Candidato cand;
         int i;
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response =>
         {
             indexes_server = response;
-            bool hasLojaInReach = false;
-            id_ultima_loja = indexes_server.STORE_ID_TRACKER;
+            id_ultimo_cand = indexes_server.CANDIDATO_ID_TRACKER;
             //Ve as lojas
-            for (i = 0; i <= id_ultima_loja; i++)
+            for (i = 0; i <= id_ultimo_cand; i++)
             {
-                RestClient.Get<Loja>($"{DATABASE_URL}{INDEX_LOJAS}/{i}.json").Then(response2 =>
+                RestClient.Get<Candidato>($"{DATABASE_URL}{INDEX_CANDIDATOS}/{i}.json").Then(response2 =>
                 {
-                    //if (response != null) Debug.Log("============================> PEGOU AS LOJAS!");
-                    loja = response2;
-                    //Debug.Log("============== " + loja.name);
-                    
-                    if (!hasLojaInReach && controller.CanLojaDevilerToCustomer(loja))
-                    {
-                        controller.PresetTheProductListQIT();
-                        hasLojaInReach = true;
-                        Debug.Log("============================> Há loja no alcance! " + loja.name);
-                        return;
-                    }
-                    
+                    cand = response2;
+                    controller.LoadCandidatoCell(cand);
                 });
 
-                if (hasLojaInReach) break;
-                //Retorna ao achar primeira loja
             }
-            if (!hasLojaInReach) View.ShowFeedbackMsg("Não há loja no alcance");
+
         });
     
 }
-*/
+
+
 }

@@ -25,7 +25,7 @@ public class View : MonoBehaviour
 
     [Header("Fields Vaga")]
     public InputField field_titleVaga;
-    public InputField field_descVaga, field_endVaga, field_nomeMentor, field_dataHr;
+    public InputField field_descVaga, field_endVaga, field_nomeMentor, field_dataHr, field_vaganb;
     public Dropdown field_cidadeVaga, field_estadoVaga, field_formacaoVaga;
 
     [Header("Fields Vaga Show To Cand")]
@@ -45,6 +45,8 @@ public class View : MonoBehaviour
     public Text diferencialCandShow;
     public Text interessesCandShow;
     public Slider interesse_slider, conhec_slider, comunic_slider, pensLog_slider;
+    public Button sendInviteToMentoria;
+    public Text vagaNameInConfirm;
 
     [Header("Telas")]
     public RectTransform tela_cand_ou_empresa;
@@ -52,6 +54,7 @@ public class View : MonoBehaviour
     public RectTransform tela_vaga_show_to_cand;
     public RectTransform tela_vaga_show_to_emp;
     public RectTransform tela_cand_showemp;
+    public RectTransform tela_confirm_invite;
 
     public static View instance;
 
@@ -121,6 +124,7 @@ public class View : MonoBehaviour
         v.city = field_cidadeVaga.value;
         v.state = field_estadoVaga.value;
         v.formacaoMinima = field_formacaoVaga.value;
+        v.maxVagas = Int32.Parse(field_vaganb.text);
         return v;
     }
 
@@ -153,7 +157,18 @@ public class View : MonoBehaviour
         pensLog_slider.value = c.rankPensLogico;
 
         photoCandShow.sprite = sp;
+        sendInviteToMentoria.gameObject.SetActive(false);
     }
+
+    public void ShowCandInfoToEmpresa(Candidato c, Sprite sp){
+        ShowCandInfo(c,sp);
+        sendInviteToMentoria.gameObject.SetActive(true);
+    }
+
+    public void AskConfirmSelectCandidato(string vaganame) {
+        tela_confirm_invite.gameObject.SetActive(true);
+        vagaNameInConfirm.text = "Confirma o contato com este candidato via SMS e email para comparecer na mentoria " + vaganame + " ?";
+}
 
     public void CleanHolder(Transform holder, bool isCandCell, bool isVagaCell)
     {

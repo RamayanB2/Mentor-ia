@@ -5,10 +5,19 @@ using System.Net.Mail;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 
-public class SMSContacter : MonoBehaviour
+public class SMSContacter
 {
-    public string bodyMessage;//corpo do texto do email
-    public string recipientEmail;//email alvo
+    public Candidato cand_alvo;
+    private string bodyMessage;//corpo do texto do email
+    private string recipientEmail;//email alvo
+
+    private void Start(){
+        recipientEmail = cand_alvo.email;
+    }
+
+    public void SetTargetCand(Candidato c){
+        this.cand_alvo = c;
+    }
 
     public void SendEmail()
     {
@@ -37,7 +46,7 @@ public class SMSContacter : MonoBehaviour
     }
 
 
-    public void SendText(string phoneNumber)
+    public void SendText()
     {
         MailMessage mail = new MailMessage();
         SmtpClient SmtpServer = new SmtpClient("smtp.gmail.com");
@@ -47,16 +56,16 @@ public class SMSContacter : MonoBehaviour
 
         mail.From = new MailAddress("mentor.ia.noreply@gmail.com");
 
-        mail.To.Add(new MailAddress(phoneNumber + "@txt.att.net"));//See carrier destinations below
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@txt.att.net"));//See carrier destinations below
                                                                    //message.To.Add(new MailAddress("5551234568@txt.att.net"));
-        mail.To.Add(new MailAddress(phoneNumber + "@vtext.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@messaging.sprintpcs.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@tmomail.net"));
-        mail.To.Add(new MailAddress(phoneNumber + "@vmobl.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@messaging.nextel.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@myboostmobile.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@message.alltel.com"));
-        mail.To.Add(new MailAddress(phoneNumber + "@mms.ee.co.uk"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@vtext.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@messaging.sprintpcs.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@tmomail.net"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@vmobl.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@messaging.nextel.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@myboostmobile.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@message.alltel.com"));
+        mail.To.Add(new MailAddress(cand_alvo.telNumber + "@mms.ee.co.uk"));
 
 
 

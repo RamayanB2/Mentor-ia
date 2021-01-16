@@ -25,7 +25,9 @@ public class Vaga
     public int city;
 
     public string date_hr;//Data e HORA
-    public MENTOR_TYPE mentor_type;
+    public bool isVagaOpen;
+    public int filledVagas;
+    public int maxVagas;
 
     public List<String> cpfs_candidatos;
 
@@ -42,6 +44,9 @@ public class Vaga
         this.state = 16;
         this.city = 1;
         this.date_hr = "Dia 25 de jan as 15hrs";
+        this.isVagaOpen = true;
+        this.filledVagas = 0;
+        this.maxVagas = 1;
     }
 
     public void SetEmpresa(Empresa emp) {
@@ -50,7 +55,10 @@ public class Vaga
     }
 
     public void CandidatarAvaga(string cpf_cand) {
-        this.cpfs_candidatos.Add(cpf_cand);
+        if(isVagaOpen && filledVagas + 1 <= maxVagas){
+            this.filledVagas++;
+            this.cpfs_candidatos.Add(cpf_cand);
+        } if (this.filledVagas == maxVagas) isVagaOpen = false;
     }
 
     public bool HasCpf(string s) {

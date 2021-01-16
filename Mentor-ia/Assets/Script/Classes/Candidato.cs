@@ -30,12 +30,7 @@ public class Candidato {
 
     public string diferencial;
     public string motivacao;
-
-    void Start()
-    {
-        
-
-    }
+    
 
     public Candidato() {
         this.cpf = "00011122233";
@@ -52,7 +47,13 @@ public class Candidato {
         this.areaDeInteresse2 = 1;
         this.diferencial = "Luto kung fu nas horas vagas.";
         this.motivacao = "Ser um faixa preta.";
-    }
+
+        this.ratingMax = 3;
+        this.rankInteresse = 3;
+        this.rankConhecGerais = 3;
+        this.rankComunicacao = 3;
+        this.rankPensLogico = 3;
+}
 
     
 }
