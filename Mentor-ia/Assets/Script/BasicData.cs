@@ -15,6 +15,11 @@ public class BasicData : MonoBehaviour
 
     public string[] areaDeInteresse;
 
+    public string[] raca;
+
+    public string[] genero;
+
+
 
 
     public Sprite GetPhotoCand(string cpf) {
@@ -61,6 +66,16 @@ public class BasicData : MonoBehaviour
 
     public string GetAreaInteresse(int id){
         return areaDeInteresse[id];
+    }
+
+    public string GetRaca(int id)
+    {
+        return raca[id];
+    }
+
+    public string GetGenero(int id)
+    {
+        return genero[id];
     }
 
 

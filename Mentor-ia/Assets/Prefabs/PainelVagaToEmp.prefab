@@ -180,7 +180,9 @@ MonoBehaviour:
     state: 1
     city: 1
     date_hr: 15 hrs
-    mentor_type: 0
+    isVagaOpen: 1
+    filledVagas: 0
+    maxVagas: 1
     cpfs_candidatos: []
 --- !u!114 &792798699143886617
 MonoBehaviour:
@@ -306,9 +308,9 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: c26be66d071b1de4fa64054a111221e1, type: 3}
     m_FontSize: 11
     m_FontStyle: 1
-    m_BestFit: 0
-    m_MinSize: 1
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 8
+    m_MaxSize: 14
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1

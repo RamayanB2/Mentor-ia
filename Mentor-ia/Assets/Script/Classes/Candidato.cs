@@ -48,11 +48,11 @@ public class Candidato {
         this.diferencial = "Luto kung fu nas horas vagas.";
         this.motivacao = "Ser um faixa preta.";
 
-        this.ratingMax = 3;
-        this.rankInteresse = 3;
-        this.rankConhecGerais = 3;
-        this.rankComunicacao = 3;
-        this.rankPensLogico = 3;
+        this.ratingMax = 0;
+        this.rankInteresse = 60;
+        this.rankConhecGerais = 60;
+        this.rankComunicacao = 60;
+        this.rankPensLogico = 60;
 }
 
     

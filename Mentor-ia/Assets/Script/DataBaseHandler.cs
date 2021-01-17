@@ -79,18 +79,14 @@ public static class DataBaseHandler
                 
             }
             //controller.ShowMsgNoPedido();
-
-        });
-
-        
+        });        
     }
-
 
 
     public static void PutNewCandidatoInServer(Candidato cand){
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
             indexes_server = response;
-
+            //indexes_server.CANDIDATO_ID_TRACKER = 0;//para resetar id
             int id_cand= indexes_server.CANDIDATO_ID_TRACKER;
             id_cand++;
             indexes_server.CANDIDATO_ID_TRACKER = id_cand;
@@ -106,7 +102,7 @@ public static class DataBaseHandler
     {
         RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response => {
             indexes_server = response;
-
+            //indexes_server.VAGA_ID_TRACKER = 0;//para resetar id
             int id_vag = indexes_server.VAGA_ID_TRACKER;
             id_vag++;
             indexes_server.VAGA_ID_TRACKER = id_vag;
@@ -123,9 +119,13 @@ public static class DataBaseHandler
     public static void EditCandidatoInServer(Candidato cand){
         RestClient.Put<Candidato>($"{DATABASE_URL}{INDEX_CANDIDATOS}/{cand.id}.json", cand);  
     }
-    
 
-    
+    public static void EditVagaInServer(Vaga vag){
+        RestClient.Put<Vaga>($"{DATABASE_URL}{INDEX_VAGAS}/{vag.vagaId}.json", vag);
+    }
+
+
+
     public static void GetCandidatosFromServer() {
         Candidato cand;
         int i;
@@ -147,6 +147,28 @@ public static class DataBaseHandler
         });
     
 }
+    public static void GetCandidatoXFromServer(string cpf)
+    {
+        Candidato cand;
+        int i;
+        RestClient.Get<Indexes>(DATABASE_URL + TRACKERS_INDEXES + ".json").Then(response =>
+        {
+            indexes_server = response;
+            id_ultimo_cand = indexes_server.CANDIDATO_ID_TRACKER;
+            //Ve as lojas
+            for (i = 0; i <= id_ultimo_cand; i++)
+            {
+                RestClient.Get<Candidato>($"{DATABASE_URL}{INDEX_CANDIDATOS}/{i}.json").Then(response2 =>
+                {
+                    cand = response2;
+                    if (cand.cpf == cpf) controller.LoadCandidatoProfile(cand);
+                });
+
+            }
+
+        });
+
+    }
 
 
 }

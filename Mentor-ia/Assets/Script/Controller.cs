@@ -25,8 +25,8 @@ public class Controller : MonoBehaviour {
     Gps gps;
     Sprite emp_logo;
 
-    [Header("Lojas")]
-    public bool hasLoadedLoja;
+    [Header("Systems")]
+    public RatingControl ratingControl;
 
     [Header("InfoContas")]
     public bool isEmpresa;
@@ -43,6 +43,7 @@ public class Controller : MonoBehaviour {
     public bool deletePrefs;
     private BasicData basic_data;
     private SMSContacter contacter;
+    private int r_old;
 
 
     void Start(){
@@ -52,7 +53,8 @@ public class Controller : MonoBehaviour {
         view = FindObjectOfType<View>();
         DataBaseHandler.SetController(this);
         basic_data = FindObjectOfType<BasicData>();
-        contacter = new SMSContacter();
+
+        //StartCoroutine(PutExamplesInDatabaseVag());//REMOVER APÓS USO
 
         SetEmpresaListInDropDown();
         SetAreasListInDropDown();
@@ -60,7 +62,10 @@ public class Controller : MonoBehaviour {
         if (PlayerPrefs.GetInt("IsCandidato") == 1)
         {
             isCandidato = true;
-            LoadCandidatoProfile();
+            r_old = LoadCandidatoRank();
+            DataBaseHandler.GetCandidatoXFromServer(LoadCandidatoCPF());           
+
+            //LoadCandidatoProfile();//Device
             ButtonProcurarMentoria();
 
         }
@@ -78,9 +83,8 @@ public class Controller : MonoBehaviour {
             view.tela_cad_cand1.gameObject.SetActive(true);
         }
         else {
-            view.tela_cand_ou_empresa.gameObject.SetActive(false);
-            view.tela_ver_vagas.gameObject.SetActive(true);
-            ShowLoadedVagasMentoriaToUser();
+            view.GoToMainPageCandidato();
+            LoadVagasMentoriasToUser();
         }
     }
 
@@ -102,6 +106,7 @@ public class Controller : MonoBehaviour {
                     this.emp_logo = GetLogoEmpresa(emp.id);
                     view.empresa_logo_main.sprite = this.emp_logo;
                     view.empresa_logo_mentcria.sprite = this.emp_logo;
+                    view.bemvindotext.text = "Seja bem vinda, " + GetNameEmpresa(emp.id);
                     PlayerPrefs.SetInt("IsEmpresa", 1);
                     this.perfil_empresa = emp;
                     isEmpresa = true;
@@ -199,7 +204,12 @@ public class Controller : MonoBehaviour {
         View.ShowFeedbackMsg("Mentoria Criada!");
     }
 
-    public void ShowLoadedVagasMentoriaToUser() {
+    public void LoadVagasMentoriasToUser() {
+        StartCoroutine(ShowLoadedVagasMentoriaToUser());
+    }
+
+    public IEnumerator ShowLoadedVagasMentoriaToUser() {
+        yield return new WaitForSeconds(1f);
         view.CleanHolder(vagaCellsHolder_USER,false,true);
         VagaCell[] vcs = vagaCellsHolder_LOADER.GetComponentsInChildren<VagaCell>();
         VagaCell vctemp;
@@ -210,6 +220,7 @@ public class Controller : MonoBehaviour {
                 vctemp.LoadVagaLogo(GetLogoEmpresa(vc.vaga.empresaId));
            // }
         }
+        yield return new WaitForSeconds(0.1f);
     }
 
     public void ShowMyVagasMentoriaToEmp()
@@ -242,18 +253,24 @@ public class Controller : MonoBehaviour {
 
     public void ShowVagaInfoToCandidato(Vaga v){
         this.vaga_mentoria = v;
-        view.ShowVagaInfo(v, GetLogoEmpresa(v.empresaId), GetNameEmpresa(v.empresaId));
+        view.ShowVagaInfo(v, GetLogoEmpresa(v.empresaId), GetNameEmpresa(v.empresaId),false);
     }
+
 
     public void ShowVagaInfoToEmpresa(Vaga v){
         this.vaga_mentoria = v;
         view.ShowVagaInfoToEmp(v, emp_logo);
+        view.ShowVagaInfoToEmp(v, emp_logo);
         ShowLoadedCandsFromVaga();
+    }
+
+    public void ShowDetailVagaToEp() {
+        view.ShowVagaInfo(this.vaga_mentoria, GetLogoEmpresa(this.vaga_mentoria.empresaId), GetNameEmpresa(this.vaga_mentoria.empresaId), true);
     }
 
     public void ShowCandidatoInfoToEmpresa(Candidato cand) {
         this.perfil_usuario = cand;
-        view.ShowCandInfo(cand, GetPhotoCandPadrao(cand.cpf));
+        view.ShowCandInfoToEmpresa(cand, GetPhotoCandPadrao(cand.cpf));
     }
 
     public void ShowCandidatoProfileToCand() {
@@ -265,18 +282,36 @@ public class Controller : MonoBehaviour {
     }
 
     public void InviteCandidatoEmailSMS() {
-        contacter.SetTargetCand(perfil_usuario);
+        contacter = new SMSContacter();
+        contacter.SetTargetCand(perfil_usuario, 
+            "Olá " + perfil_usuario.name + "!!!\n\nVocê foi selecionado para participar da mentoria '" + this.vaga_mentoria.title
+            + "' por meio do app 'Mentor-ia'.\n\nA(O) " + perfil_empresa.name+ " fez questão de selecioná-lo para essa oportunidade de aprendizado, na qual" +
+            " você poderá estar mais próximo de futuras vagas de emprego, ao mesmo tempo que pode ser recompensado com experiência e conhecimento na mentoria prestada no dia!" +
+            "\n\nLembre-se que ao ser atencioso na mentoria prestada no dia, você irá acumular pontos EXP no aplicativo e futuramente ganhará recompensas ao subir de nível! Bolsas de estudo ou cursos completas, material, equipamento ou até mesmo 'apoio financeiro' são tipos de recompensas que pode ganhar, então fique atento(a)!" +
+            "\n\nSegue a data da mentoria "+ this.vaga_mentoria.title+ ":"+"\n"+ this.vaga_mentoria.date_hr + "\n"+ basic_data.GetStateName(this.vaga_mentoria.state)+", "+
+            basic_data.GetCityName(this.vaga_mentoria.city)+", "+this.vaga_mentoria.adress+"\nO mentor(a) '"+this.vaga_mentoria.mentorName+"' estará te aguardando no horário e local descritos." +
+            "\n\nAproveite o aprendizado. Esperamos que algum dia a(o) " + perfil_empresa.name + " possa contar com você!");    
         contacter.SendEmail();
-        contacter.SendText();
+        contacter.SendSMS2();
+      //contacter.SendText();
     }
 
 
     public void ConfirmCandidatarAVaga() {
         this.vaga_mentoria.CandidatarAvaga(this.perfil_usuario.cpf);
+        DataBaseHandler.EditVagaInServer(this.vaga_mentoria);//<-------
         View.ShowFeedbackMsg("Candidatura realizada!");
     }
 
+    #region edit_from_database
 
+    public void ChangeCadRating() {
+        this.perfil_usuario = ratingControl.ChangeRatings(perfil_usuario);
+        DataBaseHandler.EditCandidatoInServer(this.perfil_usuario);
+        View.ShowFeedbackMsg("Candidato avaliado com sucesso!");
+    }
+
+    #endregion
 
     #region load_from_database
 
@@ -301,12 +336,50 @@ public class Controller : MonoBehaviour {
         
     }
 
+    public void LoadCandidatoProfile(Candidato cand){
+        //Aqui poderia filtrar o candidato por ser da mesma cidade por exemplo
+        this.perfil_usuario = cand;
+        int r_new = this.perfil_usuario.ratingMax;
+        //View.ShowFeedbackMsg("Old rank = "+r_old);
+        //View.ShowFeedbackMsg("New rank = " + r_new);
+        if (r_new != r_old && r_new > r_old){
+            view.ShowRewardExp((int)(r_new - r_old));
+            SaveCandidatoProfile();
+        }
+
+    }
+
     #endregion
 
 
 
 
     #region save_load
+
+    /// <summary>
+    /// Usado apenas para preencher atabase com exemplo, nao usar em outros casos
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator PutExamplesInDatabaseCand() {
+        CandCell[] ccs = candsCellsHolder.GetComponentsInChildren<CandCell>();
+        //StartCoroutine(DataBaseHandler.PutNewCandidatoInServer(ccs[9].candidato));
+        yield return new WaitForSeconds(0.1f);
+        
+    }
+
+    public IEnumerator PutExamplesInDatabaseVag()
+    {
+        VagaCell[] vcs = vagaCellsHolder_LOADER.GetComponentsInChildren<VagaCell>();
+        DataBaseHandler.PutNewVagaInServer(vcs[5].vaga);
+        yield return new WaitForSeconds(0.1f);
+
+    }
+
+    public void RemoveVaga() {
+        this.vaga_mentoria.isVagaOpen = false;
+        DataBaseHandler.EditVagaInServer(this.vaga_mentoria);
+        View.ShowFeedbackMsg("Vaga Removida!");
+    }
 
     private void SaveCandidatoProfile() {
         PlayerPrefs.SetInt("IsCandidato", 1);
@@ -317,6 +390,7 @@ public class Controller : MonoBehaviour {
         PlayerPrefs.SetString("IntsCandidato", s2);
         string s3 = perfil_usuario.ratingMax +","+ perfil_usuario.rankInteresse + "," + perfil_usuario.rankConhecGerais + "," + perfil_usuario.rankComunicacao + "," + perfil_usuario.rankPensLogico;
         PlayerPrefs.SetString("RanksCandidato", s3);
+        PlayerPrefs.SetInt("RankMax",perfil_usuario.ratingMax);
     }
 
     private void LoadCandidatoProfile(){
@@ -346,6 +420,26 @@ public class Controller : MonoBehaviour {
         perfil_usuario.rankConhecGerais = Int32.Parse(ranksCandidato[2]);
         perfil_usuario.rankComunicacao = Int32.Parse(ranksCandidato[3]);
         perfil_usuario.rankPensLogico = Int32.Parse(ranksCandidato[4]);
+    }
+
+    private string LoadCandidatoCPF()
+    {
+        string[] stringsCandidato = (PlayerPrefs.GetString("StringsCandidato").Split(','));
+
+        perfil_usuario = new Candidato();
+        perfil_usuario.cpf = stringsCandidato[0];
+        perfil_usuario.name = stringsCandidato[1];
+        perfil_usuario.email = stringsCandidato[2];
+        perfil_usuario.telNumber = stringsCandidato[3];
+        perfil_usuario.diferencial = stringsCandidato[4];
+        perfil_usuario.motivacao = stringsCandidato[5];
+
+        return stringsCandidato[0];
+    }
+
+    private int LoadCandidatoRank() {
+        int r = PlayerPrefs.GetInt("RankMax",0);
+        return r; 
     }
 
 

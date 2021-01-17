@@ -9,7 +9,6 @@ using System;
 /// </summary>
 public class View : MonoBehaviour
 {
-    public Text feedback_msg;
 
     [Header("Fields Cadastro Candidato")]
     public InputField field_nome;
@@ -22,6 +21,7 @@ public class View : MonoBehaviour
     public InputField field_empresa_id;
     public InputField field_empresa_pass;
     public Image empresa_logo_main, empresa_logo_mentcria;
+    public Text bemvindotext;
 
     [Header("Fields Vaga")]
     public InputField field_titleVaga;
@@ -33,10 +33,12 @@ public class View : MonoBehaviour
     public Text topdescVagaShow;
     public Text descVagaShow;
     public Image iconVagaShow;
+    public Image botbarAccept;
 
     [Header("Fields Vaga Show To Emp")]
     public Text topbarVagaTitle;
     public Image topbarVagaIcon;
+    public Image botbarDelete;
 
     [Header("Fields Candidato Show")]
     public Text tnameCandShow;
@@ -45,8 +47,10 @@ public class View : MonoBehaviour
     public Text diferencialCandShow;
     public Text interessesCandShow;
     public Slider interesse_slider, conhec_slider, comunic_slider, pensLog_slider;
-    public Button sendInviteToMentoria;
+    public Button sendInviteToMentoria, ratingCand;
     public Text vagaNameInConfirm;
+    public Text exp_rankmax;
+    public Text lvl_rankmax;
 
     [Header("Telas")]
     public RectTransform tela_cand_ou_empresa;
@@ -58,18 +62,33 @@ public class View : MonoBehaviour
 
     public static View instance;
 
+    [Header("Feedbacks")]
+    public Image telaIntro;
+    public Text feedback_msg;
+    public Text feedBackReward;
+    public Image feedBackRewardPanel;
+    public Image panel_info;
+    public Text title_info;
+    public Text body_info;
+
     private void Awake() {
         if (instance == null) instance = this;
     }
 
-    private void Start()
-    {
+    private void Start(){
+        if (PlayerPrefs.GetInt("IsFirstUse", 1) == 1) telaIntro.gameObject.SetActive(true);
+        //ShowRewardExp(350);//Teste
+
         if (PlayerPrefs.GetInt("IsCandidato") == 1) {
             GoToMainPageCandidato();
 
         } else if (PlayerPrefs.GetInt("IsEmpresa") == 1) {
-            GoToMainPageEmpresa();
+
         }
+    }
+
+    public void DoneFirstUse() {
+        PlayerPrefs.SetInt("IsFirstUse", 0);
     }
 
     public void ButtonAbrirMentorias() {
@@ -82,6 +101,7 @@ public class View : MonoBehaviour
     }
 
     public void GoToMainPageCandidato() {
+        tela_cand_ou_empresa.gameObject.SetActive(false);
         tela_login_empresa.gameObject.SetActive(false);
         tela_ver_vagas.gameObject.SetActive(true);
     }
@@ -128,7 +148,16 @@ public class View : MonoBehaviour
         return v;
     }
 
-    public void ShowVagaInfo(Vaga v, Sprite sp, string name_emp) {
+    public void ShowVagaInfo(Vaga v, Sprite sp, string name_emp, bool isEmp) {
+        if (isEmp)
+        {
+            botbarDelete.gameObject.SetActive(true);
+            botbarAccept.gameObject.SetActive(false);
+        }
+        else {
+            botbarDelete.gameObject.SetActive(false);
+            botbarAccept.gameObject.SetActive(true);
+        }
         BasicData bd = FindObjectOfType<BasicData>();
         tela_vaga_show_to_cand.gameObject.SetActive(true);
         titleVagaShow.text = v.title;
@@ -143,14 +172,21 @@ public class View : MonoBehaviour
         topbarVagaIcon.sprite = sp;
     }
 
+
     public void ShowCandInfo(Candidato c, Sprite sp)
     {
         BasicData bd = FindObjectOfType<BasicData>();
         tela_cand_showemp.gameObject.SetActive(true);
         tnameCandShow.text = c.name;
-        descCandShow.text = c.age + " anos, " + bd.GetCityName(c.city) + ", " + bd.GetStateName(c.state) + "\n" + bd.GetFormacaoName(c.formacao) + "" + "\nContato: " + c.email + "\nTel: " + c.telNumber;
+        descCandShow.text = c.age + " anos, " + bd.GetCityName(c.city) + ", " + bd.GetStateName(c.state)+" - "+bd.GetRaca(c.raceSkin)+", "+bd.GetGenero(c.gender) + "\n" + bd.GetFormacaoName(c.formacao) + "" + "\nContato: " + c.email + "\nTel: " + c.telNumber;
         diferencialCandShow.text = "Diferencial: " + c.diferencial;
         interessesCandShow.text = "Áreas de interesse: " + bd.GetAreaInteresse(c.areaDeInteresse1) + ", " + bd.GetAreaInteresse(c.areaDeInteresse2);
+
+        exp_rankmax.text = ""+ c.ratingMax;
+        if(c.ratingMax<100)lvl_rankmax.text = "1";
+        else if(c.ratingMax>=100 && c.ratingMax<=300)lvl_rankmax.text = "2";
+        else if (c.ratingMax > 300) lvl_rankmax.text = "3";
+
         interesse_slider.value = c.rankInteresse;
         conhec_slider.value = c.rankConhecGerais;
         comunic_slider.value = c.rankComunicacao;
@@ -158,16 +194,18 @@ public class View : MonoBehaviour
 
         photoCandShow.sprite = sp;
         sendInviteToMentoria.gameObject.SetActive(false);
+        ratingCand.gameObject.SetActive(false);
     }
 
     public void ShowCandInfoToEmpresa(Candidato c, Sprite sp){
         ShowCandInfo(c,sp);
         sendInviteToMentoria.gameObject.SetActive(true);
+        ratingCand.gameObject.SetActive(true);
     }
 
     public void AskConfirmSelectCandidato(string vaganame) {
         tela_confirm_invite.gameObject.SetActive(true);
-        vagaNameInConfirm.text = "Confirma o contato com este candidato via SMS e email para comparecer na mentoria " + vaganame + " ?";
+        vagaNameInConfirm.text = "Confirma o contato com este candidato via SMS e email para comparecer na mentoria <color=#272727>'" +  vaganame+ "'</COLOR> ?";
 }
 
     public void CleanHolder(Transform holder, bool isCandCell, bool isVagaCell)
@@ -197,7 +235,7 @@ public class View : MonoBehaviour
         }
     }
 
-    
+
 
 
 
@@ -218,6 +256,46 @@ public class View : MonoBehaviour
 
 
     #region feedbackmsg
+
+    public void InfoEnviarContato(){
+        ShowInfoPanel("Convite para mentoria", "Ao confirmar essa etapa, você enviará um email e SMS para o candidato com os dados cadastrados na sua mentoria e estará assumindo que o candidato estará presente na hora e local marcados.");
+    }
+
+    public void InfoRating(){
+        ShowInfoPanel("Rating da Mentoria", "Você pode dar pontos de experiência por meio de estrelas ao candidato a mentoria, de acordo com o que pôde avaliar dele na atividade diária da mentoria. A avaliação não deve ser uma prova, mas uma observação de comportamento e interesse do candidato.\n\nCaso não tenha tido possibilidade de avaliar algum quesito, deixe o campo de estrelas em branco, pois assim o candidato não perderá pontos no rank.\n\n Seja justo nas avaliações.");
+    }
+
+    public void InfoTelaCriarMentoria()
+    {
+        ShowInfoPanel("Criação de Mentoria", "Titulo - Deve conter o nome do cargo da empresa/organização a ser acompanhado/mentorado" +
+            "\n\n" + "Descrição - Explique as atividades que serão feitas na mentoria durante o dia, se é um acompanhamento do mentor e suas atividades ou uma demostração de como o cargo funciona na empresa por exemplo." +
+           "\n\nNome do mentor - Quem ficará responsável direto pelas explicações e acompanhamento dos mentorados?" +
+           "\n\nData e hr - Exemplo: 19/02/2021 as 12 hrs" +
+           "\n\nNo Vagas - Receberá 1 pessoa ou mais nesse dia?(ao mesmo tempo)");
+        
+    }
+
+    public void InfoTelaLoginEmpresa() {
+        ShowInfoPanel("Empresas e Mentorias", "Esta é a área de login de empresas. Se você é responsável pelo RH ou por ações de impacto social de uma empresa ou centro cultural e deseja criar mentorias para jovens terem oportunidades de aprendizado no app, entre em contato conosco para cadastrarmos suas credenciais.\n\n" +
+            "Após isso será possível criar mentorias na sua organização.");
+    }
+
+    public void ShowInfoPanel(string title, string body) {
+        panel_info.gameObject.SetActive(true);
+        title_info.text = title;
+        body_info.text = body;
+}
+
+    public void ShowRewardExp(int i) {
+        StartCoroutine(RewardedMsg(i));
+    }
+
+    public IEnumerator RewardedMsg(int exp) { 
+        feedBackRewardPanel.gameObject.SetActive(true);
+        feedBackReward.text = "Parabéns!\nUma mentoria que fez recentemente lhe qualificou com + <b><color=#809EC3>"+exp +"exp</color></b>!!";
+        yield return new WaitForSeconds(7f);
+        feedBackRewardPanel.gameObject.SetActive(false);
+    }
 
     public static void ShowFeedbackMsg(string s) {
         instance.showToast(s,2);
