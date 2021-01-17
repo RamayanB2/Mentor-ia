@@ -29,7 +29,7 @@ Repositório da Equipe Tomorrow Thoughts - HackatonCCR2021
 	<li>Rode o apk pela primeira vez</li>
 	<li>Passe a explicação inicial clicando 'ok'</li>
 	<li>Clique em 'criar mentorias'</li>
-	<li>Use um login válido de organização cadastrada. Exemplo: id = 11,senha= 11</li>
+	<li>Use um login válido de organização cadastrada. Exemplo: id = 11,senha= 11 (sesc)ou id=32424, senha=234462 (CCR)</li>
 	<li>Aperte login</li>
 	<li>Você pode criar novas mentorias ou visualizar as já criadas</li>
 	<li>Para criar novas mentorias, clique no botão indicado e preencha os campos de cadastro</li>
